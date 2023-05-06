@@ -53,18 +53,18 @@
   fileInput.addEventListener('change', uploadToServer);
 
   function uploadToServer() {
-    const domain = 'https://asadbek064-crispy-journey-q7w64597966f959j.github.dev';
+    const domain = 'http://localhost:3000';
     const url = `${domain}/upload-file`;
     const file = fileInput.files[0];
-
-    uploadFile(file, url, (err, res) => {
+    const fileType = file['type'];
+    uploadFile(file, fileType, url, (err, res) => {
       if (err) console.log(err);
 
       console.log(res);
     })
   }
 
-  function uploadFile(file, url, callback) {
+  function uploadFile(file, fileType, url, callback) {
     let xhr = new XMLHttpRequest();
     
     // check the status of our request 
@@ -79,8 +79,9 @@
     };
 
     xhr.open('POST', url, true); // initiailize the request type POST, true for async flag
-    const formData = FormData(); // create a new FormData object
+    const formData = new FormData(); // create a new FormData object
     formData.append('file', file); // append our file to FormData with key = file
+    formData.append('fileType', fileType);
     xhr.send(formData); // send object to our server 
   }
 </script>
