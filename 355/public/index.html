@@ -1,96 +1,138 @@
 <html>
+  <head>
+    <title>Virus Detector</title>
+  </head>
 
-<head>
-  <title>Virus Detector</title>
-</head>
-
-<body>
-  <div class="header">
-    <div class="logo">
-      <a href="/">
-        <img style="mix-blend-mode: multiply;"  height="150" src="https://cdn.discordapp.com/attachments/842948869641338910/1103840986553126983/untitled_9.png"
-        alt="logo">
-      </a>
-    </div>
-  </div>
-
-  <!-- UPLOAD -->
-  <div class="upload-container">
-    <label for="images" class="drop-container">
-      <span class="drop-title">Drop file here</span>
-      <div style="font-size:x-small; opacity: 80%">(jpg/png/webp)</div>
-      or
-      <input type="file" id="images" accept="image/*" required>
-    </label>
-  </div>
-
-  <footer>
-    <div class="description">
-      <div class="item">
-        <h4>APIs</h4>
-        <ul>
-          <li><a target="_blank" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth 2.0</a></li>
-          <li><a target="_blank" href="https://developers.google.com/drive/api/guides/about-sdk">Google Drive API</a></li>
-          <li><a target="_blank" href="https://www.hybrid-analysis.com/docs/api/v2#/Quick%20Scan/post_quick_scan_file">Falcon Sandbox Public API</a></li>
-        </ul>
-      </div>
-      <div class="item">
-        <h4>Description</h4>
-        <p>Virus Scanner will scan the file you provided for any malware using <a href="https://www.hybrid-analysis.com/docs/api/v2#/Quick%20Scan/post_quick_scan_file" target="_blank"> hybrid-analysis </a> API and upload it directly to your google drive.</p>
+  <body>
+    <div class="header">
+      <div class="logo">
+        <a href="/">
+          <img
+            style="mix-blend-mode: multiply"
+            height="150"
+            src="https://cdn.discordapp.com/attachments/842948869641338910/1103840986553126983/untitled_9.png"
+            alt="logo"
+          />
+        </a>
       </div>
     </div>
-    <p>Author: Asadbek Karimov<br>
-  </footer>
-  
-</body>
 
+    <!-- UPLOAD -->
+    <div class="upload-container">
+      <label for="images" class="drop-container">
+        <span class="drop-title">Drop file here</span>
+        <div style="font-size: x-small; opacity: 80%">(jpg/png/webp)</div>
+        or
+        <form id="upload-form" enctype="multipart/form-data">
+          <input type="file" id="file-input" required />
+        </form>
+      </label>
+    </div>
+
+    <footer>
+      <div class="description">
+        <div class="item">
+          <h4>APIs</h4>
+          <ul>
+            <li>
+              <a
+                target="_blank"
+                href="https://developers.google.com/identity/protocols/oauth2"
+                >Google OAuth 2.0</a
+              >
+            </li>
+            <li>
+              <a
+                target="_blank"
+                href="https://developers.google.com/drive/api/guides/about-sdk"
+                >Google Drive API</a
+              >
+            </li>
+            <li>
+              <a
+                target="_blank"
+                href="https://www.hybrid-analysis.com/docs/api/v2#/Quick%20Scan/post_quick_scan_file"
+                >Falcon Sandbox Public API</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="item">
+          <h4>Description</h4>
+          <p>
+            Virus Scanner will scan the file you provided for any malware using
+            <a
+              href="https://www.hybrid-analysis.com/docs/api/v2#/Quick%20Scan/post_quick_scan_file"
+              target="_blank"
+            >
+              hybrid-analysis
+            </a>
+            API and upload it directly to your google drive.
+          </p>
+        </div>
+      </div>
+      <p>Author: Asadbek Karimov<br /></p>
+    </footer>
+  </body>
 </html>
 
 <script>
-
   /* on file upload invoke upload */
-  const fileInput = document.getElementById('images');
-  fileInput.addEventListener('change', uploadToServer);
+  const fileInput = document.getElementById("file-input");
+  fileInput.addEventListener("change", uploadToServer);
 
   function uploadToServer() {
-    const domain = 'http://localhost:3000';
+    const domain = "http://localhost:3000";
     const url = `${domain}/upload-file`;
     const file = fileInput.files[0];
-    const fileType = file['type'];
-    uploadFile(file, fileType, url, (err, res) => {
+    uploadFile(file, url, (err, res) => {
       if (err) console.log(err);
 
       console.log(res);
-    })
+    });
   }
 
-  function uploadFile(file, fileType, url, callback) {
-    let xhr = new XMLHttpRequest();
-    
-    // check the status of our request 
-    xhr.onreadystatechange = () =>{
-      if (xhr.readyState === 4) { // request was sent
-        if (xhr.status === 200) { // request was accepted
-          callback(null, xhr.responseText); 
-        } else {
-          callback(xhr.status);
-        }
-      }
-    };
-
-    xhr.open('POST', url, true); // initiailize the request type POST, true for async flag
+  function uploadFile(file, url, callback) {
     const formData = new FormData(); // create a new FormData object
-    formData.append('file', file); // append our file to FormData with key = file
-    formData.append('fileType', fileType);
-    xhr.send(formData); // send object to our server 
+    formData.append("file", file); // append our file to FormData with key = file
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.addEventListener("load", function() {
+    // 
+    if (xhr.status === 200) {
+      // file uploaded successfully extract redirect link
+      const response = JSON.parse(xhr.responseText);
+      
+      // redirect user to auth google 
+      window.location.replace(response.redirectUrl);
+    } else {
+      // fail sending file, log the error
+      console.error("Upload failed: ", xhr.status);
+    }
+  });
+
+
+    xhr.open("POST", url, true); // initiailize the request type POST, true for async flag
+    /* xhr.setRequestHeader('Content-Encoding', 'identity'); // Disable compression */
+    xhr.send(formData); // send object to our server
   }
 </script>
 
 <style>
-a:link { text-decoration: none; }
-a:visited { text-decoration: none; color: #084cdf; }
-a:hover { text-decoration: none; }
-a:active { text-decoration: none; }
+  a:link {
+    text-decoration: none;
+  }
+  a:visited {
+    text-decoration: none;
+    color: #084cdf;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+  a:active {
+    text-decoration: none;
+  }
   .description {
     text-align: start;
     padding-left: 1rem;
@@ -115,18 +157,18 @@ a:active { text-decoration: none; }
     flex-shrink: 0;
   }
 
-  html, body {
+  html,
+  body {
     font-family: Tahoma, sans-serif;
-    background: #6190E8;
-    background: -webkit-linear-gradient(to right, #A7BFE8, #6190E8);
+    background: #6190e8;
+    background: -webkit-linear-gradient(to right, #a7bfe8, #6190e8);
     /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #A7BFE8, #6190E8);
+    background: linear-gradient(to right, #a7bfe8, #6190e8);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     display: flex;
     flex-direction: column;
 
     height: 100%;
-
   }
 
   .logo {
@@ -163,7 +205,6 @@ a:active { text-decoration: none; }
     border-color: #111111;
   }
 
-
   .drop-container:hover .drop-title {
     color: #222;
   }
@@ -176,7 +217,7 @@ a:active { text-decoration: none; }
     transition: color 150ms ease-in-out;
   }
 
-  input[type=file] {
+  input[type="file"] {
     width: 350px;
     max-width: 100%;
     color: #444;
@@ -186,7 +227,7 @@ a:active { text-decoration: none; }
     border: 1px solid #393939cc;
   }
 
-  input[type=file]::file-selector-button {
+  input[type="file"]::file-selector-button {
     margin-right: 20px;
     border: none;
     background: #084cdf;
@@ -197,8 +238,7 @@ a:active { text-decoration: none; }
     transition: background 150ms ease-in-out;
   }
 
-  input[type=file]::file-selector-button:hover {
+  input[type="file"]::file-selector-button:hover {
     background: rgb(28, 23, 187);
   }
-
 </style>
