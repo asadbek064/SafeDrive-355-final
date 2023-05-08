@@ -90,6 +90,11 @@
     dropContainer.classList.remove("drag-over");
   });
 
+  // open file browser if outside of input element clicked
+  dropContainer.addEventListener('click', () => {
+    fileInput.click();
+  });
+
   // file upload to browser
   dropContainer.addEventListener("drop", uploadToServer);
   fileInput.addEventListener("change", uploadToServer);
