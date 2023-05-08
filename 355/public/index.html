@@ -99,16 +99,17 @@
     event.preventDefault();
     let target;
 
+    // Determine the target of the event (drag drop or regular input click)
     if (event instanceof DragEvent) {
       target = event.dataTransfer;
     } else if (event instanceof Event) {
       target = event.target;
     }
 
-    // 1 MB = 1,048,576 Bytes
-    const maxAllowedSize = 7 * 1024 * 1024;
+    // maximum allowed file size to 7 MB
+    const maxAllowedSize = 7 * 1024 * 1024; // 1 MB = 1,048,576 Bytes 
     
-    // file size checker
+    // Check if the file size exceeds the maximum allowed size
     if(target.files[0].size > maxAllowedSize) {
       target.value = ""; // reset 
       alert("File is too big please try again with smaller filer!");
@@ -117,6 +118,7 @@
       const url = `${domain}/upload-file`;
       const file = target.files[0];
 
+      // upload file
       uploadFile(file, url, (err, res) => {
         if (err) console.log(err);
 
