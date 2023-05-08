@@ -60,7 +60,7 @@ http
         state === undefined ||
         job_state === undefined
       ) {
-        res.writeHead(400).end("/auth/google/callback failed undefined val\n");
+        redirect_to_error_page(res, 400, "/auth/google/callback failed undefined val");
       }
 
       send_access_token_request(code, state, res);

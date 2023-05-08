@@ -19,9 +19,9 @@
 
     <!-- UPLOAD -->
     <div class="upload-container">
-      <label for="images" class="drop-container">
+      <label for="images" class="drop-container"  id="drop-container">
         <span class="drop-title">Drop file here</span>
-        <div style="font-size: x-small; opacity: 80%">(jpg/png/webp)</div>
+        <div style="font-size: x-small; opacity: 80%">(7MB limit!)</div>
         or
         <form id="upload-form" enctype="multipart/form-data">
           <input type="file" id="file-input" required />
@@ -77,22 +77,60 @@
 </html>
 
 <script>
-  /* on file upload invoke upload */
+  /* on file upload && drag and drop detect invoke uploadToServer */
+  const dropContainer = document.getElementById("drop-container");
   const fileInput = document.getElementById("file-input");
+
+  // prevent default of opening file in browser
+  dropContainer.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    dropContainer.classList.add('drag-over');
+  });
+  // prevent default of opening file in browser
+  dropContainer.addEventListener('dragleave', (event) => {
+    dropContainer.classList.remove('drag-over');
+  });
+
+  // file upload to browser
+  dropContainer.addEventListener('drop', uploadToServer)
   fileInput.addEventListener("change", uploadToServer);
 
-  function uploadToServer() {
-    const domain = "http://localhost:3000";
-    const url = `${domain}/upload-file`;
-    const file = fileInput.files[0];
-    uploadFile(file, url, (err, res) => {
-      if (err) console.log(err);
+  function uploadToServer(event) {
+    event.preventDefault();
+    let target;
 
-      console.log(res);
-    });
+    if (event instanceof DragEvent) {
+      target = event.dataTransfer;
+    } else if (event instanceof Event) {
+      target = event.target;
+    }
+
+    // 1 MB = 1,048,576 Bytes
+    const maxAllowedSize = 7 * 1024 * 1024;
+    
+    // file size checker
+    if(target.files[0].size > maxAllowedSize) {
+      target.value = ""; // reset 
+      alert("File is too big please try again with smaller filer!");
+    } else {
+      const domain = "https://safe-drive-asad-karimov.onrender.com/";
+      const url = `${domain}/upload-file`;
+      const file = target.files[0];
+
+      uploadFile(file, url, (err, res) => {
+        if (err) console.log(err);
+
+        console.log(res);
+      });
+
+    }
+
   }
 
+
+
   function uploadFile(file, url, callback) {
+    console.log(file);
     const formData = new FormData(); // create a new FormData object
     formData.append("file", file); // append our file to FormData with key = file
 
