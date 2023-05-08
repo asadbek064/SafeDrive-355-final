@@ -19,7 +19,7 @@
 
     <!-- UPLOAD -->
     <div class="upload-container">
-      <label for="images" class="drop-container"  id="drop-container">
+      <label for="images" class="drop-container" id="drop-container">
         <span class="drop-title">Drop file here</span>
         <div style="font-size: x-small; opacity: 80%">(7MB limit!)</div>
         or
@@ -60,18 +60,17 @@
         <div class="item">
           <h4>Description</h4>
           <p>
-            Virus Scanner will scan the file you provided for any malware using
+            SafeDrive utilizes the
             <a
               href="https://www.hybrid-analysis.com/docs/api/v2#/Quick%20Scan/post_quick_scan_file"
               target="_blank"
             >
               hybrid-analysis
             </a>
-            API and upload it directly to your google drive.
-          </p>
+          to scan the file you've submitted for any malware and then directly uploads it to your Google Drive. The project <a href="https://github.com/asadbek064/SafeDrive-355-final/tree/codespace-asadbek064-crispy-journey-q7w64597966f959j/355" target="_blank">source code</a> can be viewed, which was developed using only the built-in Node.js libraries.</p>
         </div>
       </div>
-      <p>Author: Asadbek Karimov<br /></p>
+      <a id="author" href="https://github.com/asadbek064" target="_blank">Author: Asadbek Karimov<br /></p>
     </footer>
   </body>
 </html>
@@ -82,17 +81,17 @@
   const fileInput = document.getElementById("file-input");
 
   // prevent default of opening file in browser
-  dropContainer.addEventListener('dragover', (event) => {
+  dropContainer.addEventListener("dragover", (event) => {
     event.preventDefault();
-    dropContainer.classList.add('drag-over');
+    dropContainer.classList.add("drag-over");
   });
   // prevent default of opening file in browser
-  dropContainer.addEventListener('dragleave', (event) => {
-    dropContainer.classList.remove('drag-over');
+  dropContainer.addEventListener("dragleave", (event) => {
+    dropContainer.classList.remove("drag-over");
   });
 
   // file upload to browser
-  dropContainer.addEventListener('drop', uploadToServer)
+  dropContainer.addEventListener("drop", uploadToServer);
   fileInput.addEventListener("change", uploadToServer);
 
   function uploadToServer(event) {
@@ -107,12 +106,12 @@
     }
 
     // maximum allowed file size to 7 MB
-    const maxAllowedSize = 7 * 1024 * 1024; // 1 MB = 1,048,576 Bytes 
-    
+    const maxAllowedSize = 7 * 1024 * 1024; // 1 MB = 1,048,576 Bytes
+
     // Check if the file size exceeds the maximum allowed size
-    if(target.files[0].size > maxAllowedSize) {
-      target.value = ""; // reset 
-      alert("File is too big please try again with smaller filer!");
+    if (target.files[0].size > maxAllowedSize) {
+      target.value = ""; // reset
+      alert("File is too big please try again with smaller file!");
     } else {
       const domain = "https://safe-drive-asad-karimov.onrender.com";
       const url = `${domain}/upload-file`;
@@ -124,12 +123,8 @@
 
         console.log(res);
       });
-
     }
-
   }
-
-
 
   function uploadFile(file, url, callback) {
     console.log(file);
@@ -138,20 +133,19 @@
 
     let xhr = new XMLHttpRequest();
 
-    xhr.addEventListener("load", function() {
-    // 
-    if (xhr.status === 200) {
-      // file uploaded successfully extract redirect link
-      const response = JSON.parse(xhr.responseText);
-      
-      // redirect user to auth google 
-      window.location.replace(response.redirectUrl);
-    } else {
-      // fail sending file, log the error
-      console.error("Upload failed: ", xhr.status);
-    }
-  });
+    xhr.addEventListener("load", function () {
+      //
+      if (xhr.status === 200) {
+        // file uploaded successfully extract redirect link
+        const response = JSON.parse(xhr.responseText);
 
+        // redirect user to auth google
+        window.location.replace(response.redirectUrl);
+      } else {
+        // fail sending file, log the error
+        console.error("Upload failed: ", xhr.status);
+      }
+    });
 
     xhr.open("POST", url, true); // initiailize the request type POST, true for async flag
     /* xhr.setRequestHeader('Content-Encoding', 'identity'); // Disable compression */
@@ -160,33 +154,31 @@
 </script>
 
 <style>
-  a:link {
+  a:link,
+  a:hover,
+  a:active {
     text-decoration: none;
   }
   a:visited {
     text-decoration: none;
     color: #084cdf;
   }
-  a:hover {
-    text-decoration: none;
-  }
-  a:active {
-    text-decoration: none;
-  }
   .description {
     text-align: start;
-    padding-left: 1rem;
+    margin: 0 5rem;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 2.8rem;
+    font-size: 1.5rem;
   }
-
+ 
   .item {
-    width: 24rem;
+    width: 100%;
   }
 
   li {
     list-style-type: none;
-    line-height: 1.6rem;
   }
   footer {
     opacity: 80%;
@@ -195,6 +187,10 @@
     background-color: rgba(255, 255, 255, 0.5);
     color: #1e1e1e;
     flex-shrink: 0;
+  }
+
+  #author {
+    font-size: 2rem;
   }
 
   html,
@@ -230,8 +226,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 200px;
+    height: 40vh;
+    width: 95vw;
     padding: 20px;
+    font-size: 3rem;
     border-radius: 5px;
     color: #444;
     cursor: pointer;
@@ -251,14 +249,15 @@
 
   .drop-title {
     color: #444;
-    font-size: 2rem;
+    font-size: 4rem;
     font-weight: bold;
     text-align: center;
     transition: color 150ms ease-in-out;
   }
 
   input[type="file"] {
-    width: 350px;
+    font-size: 2rem;
+    width: 100%;
     max-width: 100%;
     color: #444;
     padding: 5px;
@@ -280,5 +279,62 @@
 
   input[type="file"]::file-selector-button:hover {
     background: rgb(28, 23, 187);
+  }
+
+  ul {
+    padding: 0;
+    list-style-type: none;
+  }
+
+  /* desktop responsive */
+  @media only screen and (min-width: 992px) {
+    .drop-title {
+      color: #444;
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      transition: color 150ms ease-in-out;
+    }
+    .drop-container {
+      height: 35vh;
+      width: 30vw;
+      font-size: 1.5rem;
+    }
+
+    input[type="file"] {
+      font-size: 1rem;
+    }
+    
+
+    /* footer */
+    .description {
+    text-align: start;
+    margin: 0 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    line-height: 1.8rem;
+    font-size: 1rem;
+  }
+ 
+  .item {
+    width: 24rem;
+  }
+
+  li {
+    list-style-type: none;
+  }
+  footer {
+    opacity: 80%;
+    text-align: center;
+    padding: 3px;
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #1e1e1e;
+    flex-shrink: 0;
+  }
+
+  #author {
+    font-size: 1rem;
+  }
   }
 </style>
