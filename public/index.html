@@ -1,0 +1,368 @@
+<html>
+
+<head>
+  <title>SafeDrive</title>
+</head>
+
+<body onload="init()">
+  <div class="header">
+    <div class="logo">
+      <a href="/">
+        <img style="mix-blend-mode: multiply" height="150"
+          src="https://cdn.discordapp.com/attachments/842948869641338910/1103840986553126983/untitled_9.png"
+          alt="logo" />
+      </a>
+    </div>
+  </div>
+
+  <!-- UPLOAD COMPONENT -->
+  <div class="upload-container">
+    <label for="images" class="drop-container" id="drop-container">
+      <span class="drop-title">Drop file here</span>
+      <div style="font-size: x-small; opacity: 80%">(7MB limit!)</div>
+      or
+      <input type="file" id="fileUpload" />
+    </label>
+  </div>
+
+
+  <!-- BUFFER  COMPONENT  -->
+  <div class="buffer-ring hide" id="loader">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <footer>
+    <div class="description">
+      <div class="item">
+        <h4>APIs</h4>
+        <ul>
+          <li>
+            <a target="_blank" href="https://developers.google.com/identity/protocols/oauth2">Google OAuth 2.0</a>
+          </li>
+          <li>
+            <a target="_blank" href="https://developers.google.com/drive/api/guides/about-sdk">Google Drive API</a>
+          </li>
+          <li>
+            <a target="_blank"
+              href="https://www.hybrid-analysis.com/docs/api/v2#/Quick%20Scan/post_quick_scan_file">Falcon Sandbox
+              Public API</a>
+          </li>
+        </ul>
+      </div>
+      <div class="item">
+        <h4>Description</h4>
+        <p>
+          SafeDrive utilizes the
+          <a href="https://www.hybrid-analysis.com/docs/api/v2#/Quick%20Scan/post_quick_scan_file" target="_blank">
+            hybrid-analysis
+          </a>
+          to scan the file you've submitted for any malware and then directly uploads it to your Google Drive. The
+          project <a
+            href="https://github.com/asadbek064/SafeDrive-355-final/tree/codespace-asadbek064-crispy-journey-q7w64597966f959j/355"
+            target="_blank">source code</a> can be viewed, which was developed using only the built-in Node.js
+          libraries.
+        </p>
+      </div>
+    </div>
+    <a id="author" href="https://github.com/asadbek064" target="_blank">Author: Asadbek Karimov<br /></p>
+  </footer>
+</body>
+
+</html>
+
+<script>
+  const uploadToServer = (event) => {
+    event.preventDefault();
+
+    const file = event.target.files[0]
+    if (file == null) return
+
+    //const domain = "https://safe-drive-asad-karimov.onrender.com";
+    const url = `http://localhost:3000/upload-file`;
+
+    showBuffer();
+    
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", url);
+    xhr.setRequestHeader("filename", file.name);
+    
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText);
+        window.location.replace(response.redirectUrl);
+      } else if (xhr.readyState === XMLHttpRequest.DONE) {
+        console.error("Upload failed: ", xhr.status);
+      }
+    };
+    xhr.send(file);
+    
+  }
+  function init() {
+    document.getElementById('fileUpload').addEventListener('change', event => {
+      uploadToServer(event)
+    })
+  }
+  
+
+  function showBuffer() {
+    document.getElementById('loader').classList.remove('hide');
+    document.getElementById('loader').classList.add('show');
+  }
+  function hideBuffer() {
+    document.getElementById('loader').classList.remove('show');
+    document.getElementById('loader').classList.add('hide');
+  }
+
+  
+</script>
+
+<style>
+  a:link,
+  a:hover,
+  a:active {
+    text-decoration: none;
+  }
+
+  a:visited {
+    text-decoration: none;
+    color: #084cdf;
+  }
+
+  .description {
+    text-align: start;
+    margin: 0 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 2.8rem;
+    font-size: 1.5rem;
+  }
+
+  .item {
+    width: 100%;
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  footer {
+    opacity: 80%;
+    text-align: center;
+    padding: 3px;
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #1e1e1e;
+    flex-shrink: 0;
+  }
+
+  #author {
+    font-size: 2rem;
+  }
+
+  html,
+  body {
+    font-family: Tahoma, sans-serif;
+    background: #6190e8;
+    background: -webkit-linear-gradient(to right, #a7bfe8, #6190e8);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #a7bfe8, #6190e8);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+  }
+
+  .logo {
+    margin: 0 2.5rem;
+  }
+
+  .upload-container {
+    display: flex;
+    justify-content: center;
+    margin: 2rem;
+    padding: 2rem 4rem;
+    flex: 1 0 auto;
+  }
+
+  .drop-container {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 40vh;
+    width: 95vw;
+    padding: 20px;
+    font-size: 3rem;
+    border-radius: 5px;
+    color: #444;
+    cursor: pointer;
+    background-color: #ffff;
+    box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+    transition: background 150ms ease-in-out, border 150ms ease-in-out;
+  }
+
+  .drop-container:hover {
+    background: #f6f4f4;
+    border-color: #111111;
+  }
+
+  .drop-container:hover .drop-title {
+    color: #222;
+  }
+
+  .drop-title {
+    color: #444;
+    font-size: 4rem;
+    font-weight: bold;
+    text-align: center;
+    transition: color 150ms ease-in-out;
+  }
+
+  input[type="file"] {
+    font-size: 2rem;
+    width: 100%;
+    max-width: 100%;
+    color: #444;
+    padding: 5px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #393939cc;
+  }
+
+  input[type="file"]::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: #084cdf;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 150ms ease-in-out;
+  }
+
+  input[type="file"]::file-selector-button:hover {
+    background: rgb(28, 23, 187);
+  }
+
+  ul {
+    padding: 0;
+    list-style-type: none;
+  }
+
+  /* desktop responsive */
+  @media only screen and (min-width: 992px) {
+    .drop-title {
+      color: #444;
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      transition: color 150ms ease-in-out;
+    }
+
+    .drop-container {
+      height: 35vh;
+      width: 30vw;
+      font-size: 1.5rem;
+    }
+
+    input[type="file"] {
+      font-size: 1rem;
+    }
+
+
+    /* footer */
+    .description {
+      text-align: start;
+      margin: 0 2rem;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      line-height: 1.8rem;
+      font-size: 1rem;
+    }
+
+    .item {
+      width: 24rem;
+    }
+
+    li {
+      list-style-type: none;
+    }
+
+    footer {
+      opacity: 80%;
+      text-align: center;
+      padding: 3px;
+      background-color: rgba(255, 255, 255, 0.5);
+      color: #1e1e1e;
+      flex-shrink: 0;
+    }
+
+    #author {
+      font-size: 1rem;
+    }
+  }
+
+
+  /* buffering component */
+  .buffer-ring {
+    display: inline-block;
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+  }
+
+  .buffer-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    border: 10px solid #fff;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #084cdf transparent transparent transparent;
+  }
+
+  .buffer-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+  }
+
+  .buffer-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+
+  .buffer-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+  }
+
+  @keyframes lds-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .show {
+    display: block;
+  }
+
+  .hide {
+    display: none;
+  }
+
+</style>
