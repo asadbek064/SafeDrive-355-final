@@ -24,11 +24,10 @@
    <!-- UPLOAD COMPONENT -->
    <div class="upload-container">
      <label for="images" class="drop-container" id="drop-container">
-       <span class="drop-title">Upload a file</span>
-       <form action="https://safe-drive-asad-karimov.onrender.com/upload-file"
-         method="post" enctype="multipart/form-data">
-         <input type="file" id="fileUpload" />
-         <input type="submit" value="Upload" id="uploadBtn">
+       <span class="drop-title">Scan URL/Website</span>
+       <form action="http://localhost:3000/scan-url" method="get">
+         <input type="url" name="targetURL" placeholder="http://example.com/">
+         <input type="submit" value="Scan and upload results" id="uploadBtn">
        </form>
      </label>
    </div>
@@ -59,7 +58,7 @@
            <a href="https://www.hybrid-analysis.com/docs/api/v2#/Quick%20Scan/post_quick_scan_file" target="_blank">
              hybrid-analysis
            </a>
-           to scan the file you've submitted for any malware and then directly uploads it to your Google Drive. The
+           to scan the Target URL/website you've submitted for any malware/scams and then directly uploads the results to your Google Drive. The
            project <a
              href="https://github.com/asadbek064/SafeDrive-355-final/tree/codespace-asadbek064-crispy-journey-q7w64597966f959j/355"
              target="_blank">source code</a> can be viewed, which was developed using only the built-in Node.js
@@ -72,3 +71,4 @@
  </body>
  
  </html>
+
