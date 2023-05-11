@@ -337,7 +337,7 @@
       filename = filename.replace(' ', '-');
   
       // generate path to save file to
-      const savePath = `${__dirname}/uploads/${filename}`;
+      const savePath = `./uploads/${filename}`;
   
       // create a write stream
       const filestream = fs.createWriteStream(savePath)
