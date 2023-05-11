@@ -223,7 +223,8 @@ function upload_report_to_google_drive(job_state, scanners, access_token, res) {
 
   console.log(report);
   // save the file
-  var savePath = `./uploads/Result-${job_state.state}.txt`;
+
+  var savePath = `${__dirname}/uploads/Result-${job_state.state}.txt`;
 
   fs.appendFile(savePath, report, function (err) {
     if (err) throw err;
