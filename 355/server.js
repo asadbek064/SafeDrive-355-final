@@ -74,6 +74,7 @@
             "/auth/google/callback failed undefined val"
           );
         }
+        
   
         send_access_token_request(code, state, res);
       } else if (pathname === "/favicon.ico") {
